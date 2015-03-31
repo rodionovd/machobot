@@ -76,6 +76,6 @@ header.
 
 --------------
 
-Found an issue? `Sumbit an issue`_.
+Found an issue? `Submit an issue`_.
 
 .. _Sumbit an issue: https://github.com/rodionovd/machobot/issues/new
