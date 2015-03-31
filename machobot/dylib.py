@@ -9,8 +9,8 @@ from macholib.mach_o import load_command, dylib_command, LC_LOAD_DYLIB, MH_MAGIC
 def insert_load_command(target_path, library_install_name):
 	""" Inserts a new LC_LOAD_DYLIB load command into the target Mach-O header.
 	
-	Note: the target file will be overrited. Consider backing it up first before calling this function.
-	Returns True if everything is OK. Otherwise rises an exeption.
+	Note: the target file will be overwritten. Consider backing it up first before calling this function.
+	Returns True if everything is OK. Otherwise rises an exception.
 	"""
 	if not os.path.isfile(target_path):
 		raise Exception("You must specify a real executable path as a target")
