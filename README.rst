@@ -95,8 +95,8 @@ So that's why you may want to specify the `header_magic` value for a particular 
 +============================+=================================================================================================+
 | ``target_path``            | A path to the target Mach-O executable file.                                                    |
 +----------------------------+-------------------------------------------------------------------------------------------------+
-| ``header_magic``           | Mach-O MAGIC value for a header you want to inspect. If this argument not provided, the function|
-|                            | returns a list of the first header's dependencies.                                              |
+| ``header_magic``           | Mach-O MAGIC value for a header you want to inspect. If this argument is not provided, the      |
+|                            | function returns a list of the first header's dependencies.                                     |
 +----------------------------+-------------------------------------------------------------------------------------------------+
 
 +-----------------------------------------------------------------------+
