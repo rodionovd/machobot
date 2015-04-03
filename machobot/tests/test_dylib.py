@@ -19,7 +19,7 @@ class TestDylib(TestCase):
 					
 	def test_inserting_load_command_into_32bit_target(self):
 		# given
-		target = self.request_target_named("target32")
+		target = self.request_asset("target32")
 		# when
 		regular_return_value = call(target)
 		inserted = dylib.insert_load_command(target, self.install_name)
@@ -31,7 +31,7 @@ class TestDylib(TestCase):
 				
 	def test_inserting_load_command_into_64bit_target(self):
 		# given
-		target = self.request_target_named("target64")
+		target = self.request_asset("target64")
 		# when
 		regular_return_value = call(target)
 		inserted = dylib.insert_load_command(target, self.install_name)
@@ -43,7 +43,7 @@ class TestDylib(TestCase):
 		
 	def test_inserting_load_command_into_fat_target(self):
 		# given
-		target = self.request_target_named("fat_target")
+		target = self.request_asset("fat_target")
 		# when
 		regular_return_value = call(target)
 		inserted = dylib.insert_load_command(target, self.install_name)
@@ -65,12 +65,12 @@ class TestDylib(TestCase):
 	@classmethod
 	def tearDownClass(cls):
 		""" Since the injectee library is shared across all targets,
-		we delete it after executing all the tests.
+		we only delete it after executing all the tests.
 		"""
 		if TestDylib.library_path is not None:
 			delete_file(TestDylib.library_path)
 	
-	def request_target_named(self, filename):
+	def request_asset(self, filename):
 		""" Copies the required target and the injectee library (if needed) into a temporary directory.
 		Returns a new path for the target.
 		"""
