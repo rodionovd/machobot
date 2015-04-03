@@ -28,7 +28,7 @@ def insert_load_command(target_path, library_install_name):
 		
 	return modify_macho_file_headers(target_path, patchHeader)
 
-def macho_dependencies_list(target_path, header_magic=None):
+def macho_dependencies_list(target_path, header_magic=0):
 	""" Generates a list of libraries the given Mach-O file depends on.
 
 	In that list a single library is represented by its "install path": for some
@@ -52,12 +52,11 @@ def macho_dependencies_list(target_path, header_magic=None):
 	# Obtain a list of headers for the required magic value (if any)
 	suggestions = filter(lambda t: t.header.magic == header_magic
 	                                 or # just add all headers if user didn't specifiy the magic
-	                                 header_magic == None, macho.headers)
+	                                 header_magic == 0, macho.headers)
 	header = None if len(suggestions) <= 0 else suggestions[0]
 	# filter() above *always* returns a list, so we have to check if it's empty
 	if header is None:
 		raise Exception("Unable to find a header for the given MAGIC value in that Mach-O file")
-		return None
 
 	def decodeLoadCommandData(data):
 		# Also ignore trailing zeros
@@ -107,7 +106,6 @@ def generate_dylib_load_command(header, libary_install_name):
 			break
 	if not lc or not cmd:
 		raise Exception("Invalid Mach-O file. I mean, there must be at least one LC_LOAD_DYLIB load command.")
-		return None
 	
 	# Well, now we just replace everything with our own stuff
 	cmd.timestamp = 0

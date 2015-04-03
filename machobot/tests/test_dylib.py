@@ -75,6 +75,15 @@ class TestDylib(TestCase):
 			"/usr/lib/libSystem.B.dylib"
 		])
 		
+	def test_list_dependencies_for_invalid_magic(self):
+		# given
+		target = self.request_asset("deps")
+		# then
+		self.assertRaisesRegexp(
+			Exception, "Unable to find a header for the given MAGIC value in that Mach-O file",
+			dylib.macho_dependencies_list, target, 'Not-a-Mach-O-Magic'
+		)
+		
 		
 	def __init__(self, *args, **kwargs):
 		super(TestDylib, self).__init__(*args, **kwargs)
