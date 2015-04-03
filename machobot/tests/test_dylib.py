@@ -53,6 +53,28 @@ class TestDylib(TestCase):
 		self.assertTrue(inserted)
 		self.assertEqual(new_return_value, TestDylib.magic_return_value)
 		
+	def test_list_weak_dependencies(self):
+		# given
+		target = self.request_asset("deps")
+		# when
+		deps = dylib.macho_dependencies_list(target)
+		# then
+		self.assertSequenceEqual(deps.weak, [
+			"@executable_path/injectee.dylib",
+			"/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation"
+		])
+		
+	def test_list_strong_dependencies(self):
+		# given
+		target = self.request_asset("deps")
+		# when
+		deps = dylib.macho_dependencies_list(target, 'MH_MAGIC_64')
+		# then
+		self.assertSequenceEqual(deps.strong, [
+			"/usr/lib/libutil.dylib",
+			"/usr/lib/libSystem.B.dylib"
+		])
+		
 		
 	def __init__(self, *args, **kwargs):
 		super(TestDylib, self).__init__(*args, **kwargs)
