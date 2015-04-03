@@ -22,12 +22,11 @@ def insert_load_command(target_path, library_install_name):
 	Note: the target file will be overwritten. Consider backing it up first before calling this function.
 	Returns True if everything is OK. Otherwise rises an exception.
 	"""
-	def patch_header(t):
+	def patchHeader(t):
 		load_command = generate_dylib_load_command(t, library_install_name)
 		return insert_load_command_into_header(t, load_command)
 		
-	return modify_macho_file_headers(target_path, patch_header)
-	
+	return modify_macho_file_headers(target_path, patchHeader)
 
 def macho_dependencies_list(target_path, header_magic=None):
 	""" Generates a list of libraries the given Mach-O file depends on.
