@@ -1,10 +1,18 @@
-import os.path
-from copy import deepcopy
+# dylib.py - machobot
+# Copyright (c) 2015 Dmitry Rodionov
+# https://github.com/rodionovd/machobot
+#
+# This software may be modified and distributed under the terms
+# of the MIT license.  See the LICENSE file for details.
+
 from shutil import copy2
+from copy import deepcopy
 
 from macholib.MachO import MachO
 from macholib.ptypes import sizeof
 from macholib.mach_o import load_command, dylib_command, LC_LOAD_DYLIB, MH_MAGIC
+
+from .common.macho_helpers import modify_macho_file_headers
 
 def insert_load_command(target_path, library_install_name):
 	""" Inserts a new LC_LOAD_DYLIB load command into the target Mach-O header.
@@ -12,22 +20,14 @@ def insert_load_command(target_path, library_install_name):
 	Note: the target file will be overwritten. Consider backing it up first before calling this function.
 	Returns True if everything is OK. Otherwise rises an exception.
 	"""
-	if not os.path.isfile(target_path):
-		raise Exception("You must specify a real executable path as a target")
-		return False
-	m = MachO(target_path)
-	f = open(target_path, "r+")
-	
-	for header in m.headers:
-		load_command = generate_dylib_load_command(header, library_install_name)
-		insert_load_command_into_header(header, load_command)
+	def patch_header(t):
+		load_command = generate_dylib_load_command(t, library_install_name)
+		return insert_load_command_into_header(t, load_command)
 		
-	# TODO(rodionovd): this is not safe - we can lose the original file
-	m.write(f)
-	return True
+	return modify_macho_file_headers(target_path, patch_header)
 	
 def insert_load_command_into_header(header, load_command):
-	""" Appends the given load command to the end of the header's commands. """
+	""" Inserts the given load command into the header and adjust its size. """
 	lc, cmd, path = load_command
 	header.commands.append((lc, cmd, path))
 	header.header.ncmds += 1
