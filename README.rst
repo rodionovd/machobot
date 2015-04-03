@@ -29,19 +29,19 @@ Usage
 
 -  As a command-line util:
 
-   .. code:: bash
+	.. code:: bash
 
 	   $ inject_dylib ./target "@rpath/mylib.dylib"
 
 -  As a Python module:
 
-   .. code:: python
+	.. code:: python
 
 	   import machobot
 
-   Example usage:
+	Example usage:
 
-   .. code:: python
+	.. code:: python
 
 	   import machobot.dylib as dylib
 
@@ -53,7 +53,7 @@ Modules
 dylib
 '''''''''
 
-   .. code:: python
+	.. code:: python
 
 	   insert_load_command (target_path, library_install_name)
 
@@ -74,8 +74,40 @@ header.
 | Returns ``True`` if everything is OK. Otherwise rises an exception.   |
 +-----------------------------------------------------------------------+
 
+
+
+	.. code:: python
+
+	   macho_dependencies_list (target_path, header_magic=None)
+
+Generates a list of libraries the given Mach-O file depends on.
+
+In that list a single library is represented by its "install path": for some
+libraries it would be a full file path, and for others it would be a relative
+path (sometimes with dyld templates like @executable_path or @rpath in it).
+
+Note: I don't know any reason why would some architectures of a fat Mach-O depend
+on certain libraries while others don't, but *it's technically possible*.
+So that's why you may want to specify the `header_magic` value for a particular header.
+
++----------------------------+-------------------------------------------------------------------------------------------------+
+| Argument                   | Description                                                                                     |
++============================+=================================================================================================+
+| ``target_path``            | A path to the target Mach-O executable file.                                                    |
++----------------------------+-------------------------------------------------------------------------------------------------+
+| ``header_magic``           | Mach-O MAGIC value for a header you want to inspect. If this argument not provided, the function|
+|                            | returns a list of the first header's dependencies.                                              |
++----------------------------+-------------------------------------------------------------------------------------------------+
+
++-----------------------------------------------------------------------+
+| Return value                                                          |
++=======================================================================+
+| An object with two properties: ``weak`` and ``strong`` that hold lists|
+| of weak and strong dependencies respectively.                         |
++-----------------------------------------------------------------------+
+
+See ``machobot/tests/test_dylib.py`` for usage examples.
+
 --------------
 
-Found an issue? `Submit an issue`_.
-
-.. _Sumbit an issue: https://github.com/rodionovd/machobot/issues/new
+Found an issue? Submit an issue! :shipit:
