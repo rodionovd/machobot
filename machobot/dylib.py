@@ -118,7 +118,7 @@ def generate_dylib_load_command(header, libary_install_name):
 	# `name` is rather bad name for this property: actually it means a path string offset
 	cmd.name = base
 	# Also the whole thing must be aligned by 4 bytes on 32-bit arches and by 8 bytes on 64-bit arches
-	align = 4 if header.MH_MAGIC == MH_MAGIC else 8
+	align = 4 if header.header.magic == MH_MAGIC else 8
 	aligned_name = libary_install_name + (b'\x00' * (align - (len(libary_install_name) % align)))
 	# So now we finally can say what size this load_command is
 	lc.cmdsize = base + len(aligned_name)
