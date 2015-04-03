@@ -5,12 +5,14 @@
 # This software may be modified and distributed under the terms
 # of the MIT license.  See the LICENSE file for details.
 
+import sys
 from shutil import copy2
-from copy import deepcopy
+from copy  import deepcopy
+from collections import namedtuple
 
 from macholib.MachO import MachO
 from macholib.ptypes import sizeof
-from macholib.mach_o import load_command, dylib_command, LC_LOAD_DYLIB, MH_MAGIC
+from macholib.mach_o import *
 
 from .common.macho_helpers import modify_macho_file_headers
 
@@ -26,6 +28,57 @@ def insert_load_command(target_path, library_install_name):
 		
 	return modify_macho_file_headers(target_path, patch_header)
 	
+
+def macho_dependencies_list(target_path, header_magic=None):
+	""" Generates a list of libraries the given Mach-O file depends on.
+
+	In that list a single library is represented by its "install path": for some
+	libraries it would be a full file path, and for others it would be a relative
+	path (sometimes with dyld templates like @executable_path or @rpath in it).
+
+	Note: I don't know any reason why would some architectures of a fat Mach-O depend
+	on certain libraries while others don't, but *it's technically possible*.
+	So that's why you may want to specify the `header_magic` value for a particular header.
+
+	Returns an object with two properties: `weak` and `strong` that hold lists of weak
+	and strong dependencies respectively.
+	"""
+	MachODeprendencies = namedtuple("MachODeprendecies", "weak strong")
+
+	# Convert the magic value into macholib representation if needed
+	if isinstance(header_magic, basestring):
+		header_magic = _MH_MAGIC_from_string(header_magic)
+
+	macho = MachO(target_path)
+	# Obtain a list of headers for the required magic value (if any)
+	suggestions = filter(lambda t: t.header.magic == header_magic
+	                                 or # just add all headers if user didn't specifiy the magic
+	                                 header_magic == None, macho.headers)
+	header = None if len(suggestions) <= 0 else suggestions[0]
+	# filter() above *always* returns a list, so we have to check if it's empty
+	if header is None:
+		raise Exception("Unable to find a header for the given MAGIC value in that Mach-O file")
+		return None
+
+	def decodeLoadCommandData(data):
+		# Also ignore trailing zeros
+		return data[:data.find(b"\x00")].decode(sys.getfilesystemencoding())
+
+	def strongReferencesFromHeader(h):
+		# List of LC_LOAD_DYLIB commands
+		list = filter(lambda (lc,cmd,data): lc.cmd == LC_LOAD_DYLIB, h.commands)
+		# Their contents (aka data) as a file path
+		return map(lambda (lc,cmd,data): decodeLoadCommandData(data), list)
+
+	def weakReferencesFromHeader(h):
+		list = filter(lambda (lc,cmd,data): lc.cmd == LC_LOAD_WEAK_DYLIB, h.commands)
+		return map(lambda (lc,cmd,data): decodeLoadCommandData(data), list)
+
+	strongRefs = strongReferencesFromHeader(header)
+	weakRefs   = weakReferencesFromHeader(header)
+
+	return MachODeprendencies(weak = weakRefs, strong = strongRefs)
+
 def insert_load_command_into_header(header, load_command):
 	""" Inserts the given load command into the header and adjust its size. """
 	lc, cmd, path = load_command
@@ -71,4 +124,10 @@ def generate_dylib_load_command(header, libary_install_name):
 	lc.cmdsize = base + len(aligned_name)
 	
 	return (lc, cmd, aligned_name)	
-	
+
+
+def _MH_MAGIC_from_string(str):
+	return {
+		'MH_MAGIC'   : MH_MAGIC,
+		'MH_MAGIC_64': MH_MAGIC_64,
+	}.get(str, None)
