@@ -110,6 +110,4 @@ See ``machobot/tests/test_dylib.py`` for usage examples.
 
 --------------
 
-Found an issue? `Submit an issue`_.
-
-.. _Sumbit an issue: https://github.com/rodionovd/machobot/issues/new
+Found an issue? Submit an issue! :shipit:
