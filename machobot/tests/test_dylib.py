@@ -19,7 +19,7 @@ class TestDylib(TestCase):
 					
 	def test_inserting_load_command_into_32bit_target(self):
 		# given
-		target = self.request_asset("target32")
+		target = self.request_target("target32")
 		# when
 		regular_return_value = call(target)
 		inserted = dylib.insert_load_command(target, self.install_name)
@@ -31,7 +31,7 @@ class TestDylib(TestCase):
 				
 	def test_inserting_load_command_into_64bit_target(self):
 		# given
-		target = self.request_asset("target64")
+		target = self.request_target("target64")
 		# when
 		regular_return_value = call(target)
 		inserted = dylib.insert_load_command(target, self.install_name)
@@ -43,7 +43,7 @@ class TestDylib(TestCase):
 		
 	def test_inserting_load_command_into_fat_target(self):
 		# given
-		target = self.request_asset("fat_target")
+		target = self.request_target("fat_target")
 		# when
 		regular_return_value = call(target)
 		inserted = dylib.insert_load_command(target, self.install_name)
@@ -93,6 +93,9 @@ class TestDylib(TestCase):
 			delete_file(TestDylib.library_path)
 	
 	def request_asset(self, filename):
+		return os.path.dirname(__file__) + "/assets/" + filename
+	
+	def request_target(self, filename):
 		""" Copies the required target and the injectee library (if needed) into a temporary directory.
 		Returns a new path for the target.
 		"""
