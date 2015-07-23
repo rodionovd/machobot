@@ -3,7 +3,10 @@ machobot
 
 .. image:: https://travis-ci.org/rodionovd/machobot.svg?branch=master
     :target: https://travis-ci.org/rodionovd/machobot
-  
+.. image:: https://codeclimate.com/github/rodionovd/machobot/badges/gpa.svg
+   :target: https://codeclimate.com/github/rodionovd/machobot
+   :alt: Code Climate
+
 A Python toolbox for Mach-O files analysis. Heavily relies on
 ``macholib``.   
   
