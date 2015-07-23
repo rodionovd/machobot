@@ -1,5 +1,8 @@
 machobot  
 ========  
+
+.. image:: https://travis-ci.org/rodionovd/machobot.svg?branch=master
+    :target: https://travis-ci.org/rodionovd/machobot
   
 A Python toolbox for Mach-O files analysis. Heavily relies on
 ``macholib``.   
