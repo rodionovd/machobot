@@ -65,13 +65,13 @@ def macho_dependencies_list(target_path, header_magic=None):
 
 	def strongReferencesFromHeader(h):
 		# List of LC_LOAD_DYLIB commands
-		list = filter(lambda (lc,cmd,data): lc.cmd == LC_LOAD_DYLIB, h.commands)
+		list = filter(lambda lc,cmd,data: lc.cmd == LC_LOAD_DYLIB, h.commands)
 		# Their contents (aka data) as a file path
-		return map(lambda (lc,cmd,data): decodeLoadCommandData(data), list)
+		return map(lambda lc,cmd,data: decodeLoadCommandData(data), list)
 
 	def weakReferencesFromHeader(h):
-		list = filter(lambda (lc,cmd,data): lc.cmd == LC_LOAD_WEAK_DYLIB, h.commands)
-		return map(lambda (lc,cmd,data): decodeLoadCommandData(data), list)
+		list = filter(lambda lc,cmd,data: lc.cmd == LC_LOAD_WEAK_DYLIB, h.commands)
+		return map(lambda lc,cmd,data: decodeLoadCommandData(data), list)
 
 	strongRefs = strongReferencesFromHeader(header)
 	weakRefs   = weakReferencesFromHeader(header)
@@ -111,7 +111,7 @@ def generate_dylib_load_command(header, libary_install_name):
 	
 	# Well, now we just replace everything with our own stuff
 	cmd.timestamp = 0
-	cmd.current_version = cmd.compatibility_version = 0x1000
+	cmd.current_version = cmd.compatibility_version = 0x0000
 	# Since we store the library's path just after the load command itself, we need to find out it's offset.
 	base = sizeof(load_command) + sizeof(dylib_command)
 	# `name` is rather bad name for this property: actually it means a path string offset

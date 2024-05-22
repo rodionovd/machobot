@@ -15,5 +15,5 @@ def save_macho(macho, path):
 	# We use 'r+' mode here because MachO.write() doesn't rewrite a whole
 	# file, but just a header of it; so we must not truncate the thing.
 	# There're also lots of fseek(), so 'a[+]' modes don't belong here too.
-	f = open(path, "r+")
+	f = open(path, "rb+")
 	return macho.write(f)
