@@ -18,7 +18,7 @@ For usage
 
 ::
 
-	$ [sudo] pip install machobot
+	$ [sudo] pip install machobot*.zip
 
 For development
 '''''''''''''''
@@ -26,7 +26,7 @@ For development
 ::
 
 	$ pip install nose macholib
-	$ git clone https://github.com/rodionovd/machobot.git machobot
+	$ git clone https://github.com/Solaree/machobot.git machobot
 	$ cd ./machobot
 	$ nosetests # run the test suite
 
