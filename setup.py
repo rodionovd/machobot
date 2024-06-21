@@ -5,7 +5,7 @@ def readme():
 		return f.read()
 
 setup(name = 'machobot',
-	version = '0.1.5',
+	version = '0.1.6',
 	description = 'A set of tools for Mach-O executables analysis on OS X',
 	long_description = readme(),
 	url = 'http://github.com/rodionovd/machobot',
