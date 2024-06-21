@@ -6,11 +6,11 @@ def readme():
 
 setup(name = 'machobot',
 	version = '0.1.6',
-	description = 'A set of tools for Mach-O executables analysis on OS X (original by Dmitry Rodionov)',
+	description = 'A set of tools for Mach-O executables analysis on OS X',
 	long_description = readme(),
-	url = 'http://github.com/Solaree/machobot',
-	author = 'Solaree',
-	author_email = 'dimonzemlia@gmail.com',
+	url = 'http://github.com/rodionovd/machobot',
+	author = 'Dmitry Rodionov',
+	author_email = 'i.am.rodionovd@gmail.com',
 	license = 'MIT',
 	packages = find_packages(exclude="tests"),
 	entry_points = {
