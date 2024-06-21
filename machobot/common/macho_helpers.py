@@ -27,4 +27,5 @@ def modify_macho_file_headers(macho_file_path, modificator_func):
 
 def apply_to_headers(macho_object, func):
 	""" Calls the given function on every header in the Mach-O object """
-	map(func, macho_object.headers)
+	for header in macho_object.headers:
+		func(header)
